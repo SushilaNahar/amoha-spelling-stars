@@ -213,7 +213,7 @@ function setMode(m) {
     input.disabled = false;
     label.textContent = "Now spell the word";
   } else if (m === "next") {
-    btn.textContent = "&#9733; Next Word &#9733;";
+    btn.innerHTML = "&#9733; Next Word &#9733;";
     btn.className = "action-btn btn-next";
     input.disabled = true;
   } else if (m === "copy") {
