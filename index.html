@@ -257,7 +257,7 @@ function checkAnswer() {
   var typed = input.value.trim().toLowerCase();
   if (typed === "") return;
 
-  if (typed === w.word) {
+  if (typed === w.word) {alert("typed: " + typed + " word: " + w.word);
     input.className = "spell-input correct";
     stars++;
     if (!correctStreak[w.word]) correctStreak[w.word] = 0;
