@@ -44,18 +44,22 @@
   .feedback.correct-msg { background: #dcfce7; color: #15803d; border: 2px solid #86efac; }
   .feedback.wrong-msg { background: #fee2e2; color: #b91c1c; border: 2px solid #fca5a5; }
   .feedback.copy-msg { background: #EDE9FE; color: #6D28D9; border: 2px solid #c4b5fd; }
-  .correct-word { font-size: 1.8rem; letter-spacing: 4px; color: #7C3AED; font-weight: bold; display: block; margin-top: 6px; }
   .nav-row { display: flex; justify-content: center; }
   .btn-back { background: white; color: #7C3AED; border: 2.5px solid #DDD6FE; padding: 14px 32px; border-radius: 14px; font-size: 1rem; font-weight: bold; cursor: pointer; }
   .stars-earned { text-align: center; padding: 10px 0 4px; }
   .stars-earned .star-row { font-size: 1.8rem; letter-spacing: 4px; }
   .stars-earned p { color: #DDD6FE; font-size: 0.8rem; margin-top: 4px; font-style: italic; }
   footer { width: 100%; text-align: center; padding: 14px; color: #C4B5FD; font-size: 0.75rem; font-style: italic; }
-  .celebrate { position: fixed; inset: 0; background: rgba(124,58,237,0.92); flex-direction: column; align-items: center; justify-content: center; z-index: 100; display: none; }
+  .celebrate {
+    position: fixed; inset: 0; background: rgba(124,58,237,0.92);
+    flex-direction: column; align-items: center; justify-content: center;
+    z-index: 100; display: none; cursor: pointer;
+  }
   .celebrate.show { display: flex; }
   .celebrate-text { font-size: 2.8rem; color: #F9D923; font-weight: bold; text-align: center; line-height: 1.2; }
-  .celebrate-sub { color: white; font-size: 1.1rem; margin-top: 12px; font-style: italic; }
+  .celebrate-sub { color: white; font-size: 1.1rem; margin-top: 12px; }
   .celebrate-stars { font-size: 2.5rem; letter-spacing: 8px; margin-top: 14px; }
+  .celebrate-tap { color: #DDD6FE; font-size: 0.85rem; margin-top: 20px; font-style: italic; }
   .finished-card { background: white; border-radius: 20px; padding: 32px 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); text-align: center; display: none; }
   .finished-card.show { display: block; }
   .finished-card h2 { color: #7C3AED; font-size: 1.6rem; margin-bottom: 10px; }
@@ -97,9 +101,9 @@
   <div class="card">
     <div class="card-title">Choose Your Level</div>
     <div class="level-buttons">
-      <button id="lvl1">Level 1</button>
-      <button id="lvl2" class="active" style="background:#7C3AED;color:white;border-color:#7C3AED;border-radius:12px;padding:9px 20px;font-size:0.95rem;font-weight:bold;cursor:pointer;">Level 2</button>
-      <button id="lvl3">Level 3</button>
+      <button class="level-btn" id="lvl1">Level 1</button>
+      <button class="level-btn active" id="lvl2">Level 2</button>
+      <button class="level-btn" id="lvl3">Level 3</button>
     </div>
   </div>
 
@@ -146,6 +150,7 @@
   <div class="celebrate-text">&#127775; Brilliant!<br>Amoha! &#127775;</div>
   <div class="celebrate-sub">That is correct!</div>
   <div class="celebrate-stars">&#9733; &#9733; &#9733;</div>
+  <div class="celebrate-tap">Tap anywhere to continue</div>
 </div>
 
 <script>
@@ -165,6 +170,7 @@ var correctStreak = {};
 var mastered = {};
 var history = [];
 var currentAudio = null;
+var waitingToAdvance = false;
 
 function initLevel(level) {
   currentLevel = level;
@@ -179,6 +185,7 @@ function initLevel(level) {
   stars = 0;
   correctStreak = {};
   mastered = {};
+  waitingToAdvance = false;
   document.getElementById("finishedCard").className = "finished-card";
   document.getElementById("wordCard").style.display = "";
   document.getElementById("typeCard").style.display = "";
@@ -205,7 +212,7 @@ function renderWord() {
   input.disabled = false;
 
   document.getElementById("feedbackBox").className = "feedback";
-  document.getElementById("feedbackBox").innerHTML = "";
+  document.getElementById("feedbackBox").textContent = "";
   document.getElementById("submitBtn").style.display = "block";
 
   if (copyMode) {
@@ -241,6 +248,7 @@ function playWord() {
 }
 
 function checkAnswer() {
+  if (waitingToAdvance) return;
   var words = WORDS[currentLevel];
   var idx = queue[currentIndex];
   var w = words[idx];
@@ -256,7 +264,11 @@ function checkAnswer() {
       showFeedback("copy-msg", "Good work! Moving to next word...");
       copyMode = false;
       document.getElementById("submitBtn").style.display = "none";
-      setTimeout(function() { goNext(); }, 1500);
+      waitingToAdvance = true;
+      setTimeout(function() {
+        waitingToAdvance = false;
+        goNext();
+      }, 1500);
     } else {
       input.value = "";
       showFeedback("wrong-msg", "Try again -- type: " + w.word);
@@ -273,13 +285,12 @@ function checkAnswer() {
     if (correctStreak[w.word] >= 2) mastered[w.word] = true;
     document.getElementById("submitBtn").style.display = "none";
     updateScore();
+    waitingToAdvance = true;
     showCelebrate();
-    setTimeout(function() { goNext(); }, 1800);
   } else {
     input.className = "spell-input wrong";
     correctStreak[w.word] = 0;
-    var msg = "Not quite! The correct spelling is: " + w.word + ". Now type it correctly once below.";
-    showFeedback("wrong-msg", msg);
+    showFeedback("wrong-msg", "Not quite! The correct spelling is: " + w.word + ". Now type it correctly once below.");
     copyMode = true;
     input.value = "";
     input.className = "spell-input";
@@ -307,7 +318,13 @@ function showFeedback(cls, msg) {
 function showCelebrate() {
   var cel = document.getElementById("celebrate");
   cel.className = "celebrate show";
-  setTimeout(function() { cel.className = "celebrate"; }, 1800);
+}
+
+function hideCelebrate() {
+  var cel = document.getElementById("celebrate");
+  cel.className = "celebrate";
+  waitingToAdvance = false;
+  goNext();
 }
 
 function goNext() {
@@ -329,6 +346,7 @@ function goBack() {
     currentIndex--;
   }
   copyMode = false;
+  waitingToAdvance = false;
   renderWord();
 }
 
@@ -369,58 +387,36 @@ function updateProgress() {
 }
 
 window.onload = function() {
-  document.getElementById("submitBtn").addEventListener("touchend", function(e) {
-    e.preventDefault();
-    checkAnswer();
-  });
-  document.getElementById("submitBtn").addEventListener("click", function(e) {
-    e.preventDefault();
-    checkAnswer();
-  });
-  document.getElementById("listenBtn").addEventListener("touchend", function(e) {
-    e.preventDefault();
-    playWord();
-  });
-  document.getElementById("listenBtn").addEventListener("click", function() {
-    playWord();
-  });
-  document.getElementById("backBtn").addEventListener("touchend", function(e) {
-    e.preventDefault();
-    goBack();
-  });
-  document.getElementById("backBtn").addEventListener("click", function() {
-    goBack();
-  });
-  document.getElementById("restartBtn").addEventListener("click", function() {
-    initLevel(currentLevel);
-  });
+  document.getElementById("submitBtn").addEventListener("click", function() { checkAnswer(); });
+  document.getElementById("submitBtn").addEventListener("touchend", function(e) { e.preventDefault(); checkAnswer(); });
+
+  document.getElementById("listenBtn").addEventListener("click", function() { playWord(); });
+  document.getElementById("listenBtn").addEventListener("touchend", function(e) { e.preventDefault(); playWord(); });
+
+  document.getElementById("backBtn").addEventListener("click", function() { goBack(); });
+  document.getElementById("backBtn").addEventListener("touchend", function(e) { e.preventDefault(); goBack(); });
+
+  document.getElementById("restartBtn").addEventListener("click", function() { initLevel(currentLevel); });
+
+  document.getElementById("celebrate").addEventListener("click", function() { hideCelebrate(); });
+  document.getElementById("celebrate").addEventListener("touchend", function(e) { e.preventDefault(); hideCelebrate(); });
+
   document.getElementById("spellInput").addEventListener("keydown", function(e) {
-    if (e.keyCode === 13) {
-      e.preventDefault();
-      checkAnswer();
-    }
+    if (e.keyCode === 13) { e.preventDefault(); checkAnswer(); }
   });
+
   document.getElementById("lvl1").addEventListener("click", function() { selectLevel(1); });
   document.getElementById("lvl2").addEventListener("click", function() { selectLevel(2); });
   document.getElementById("lvl3").addEventListener("click", function() { selectLevel(3); });
+
   initLevel(2);
 };
 
 function selectLevel(n) {
-  var btns = [
-    document.getElementById("lvl1"),
-    document.getElementById("lvl2"),
-    document.getElementById("lvl3")
-  ];
-  for (var i = 0; i < btns.length; i++) {
-    btns[i].className = "level-btn";
-    btns[i].style.background = "#EDE9FE";
-    btns[i].style.color = "#7C3AED";
-    btns[i].style.borderColor = "#DDD6FE";
-  }
-  btns[n-1].style.background = "#7C3AED";
-  btns[n-1].style.color = "white";
-  btns[n-1].style.borderColor = "#7C3AED";
+  document.getElementById("lvl1").className = "level-btn";
+  document.getElementById("lvl2").className = "level-btn";
+  document.getElementById("lvl3").className = "level-btn";
+  document.getElementById("lvl" + n).className = "level-btn active";
   initLevel(n);
 }
 </script>
