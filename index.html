@@ -25,8 +25,7 @@
   .feedback { display: none; border-radius: 10px; padding: 12px; text-align: center; font-weight: bold; font-size: 0.95rem; margin-bottom: 12px; width: 100%; max-width: 440px; }
   .type-lbl { font-size: 0.72rem; color: #7C3AED; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: bold; }
   .spell-input { width: 100%; border: 3px solid #DDD6FE; border-radius: 10px; padding: 12px; font-size: 1.5rem; text-align: center; color: #3B0764; font-weight: bold; font-family: Georgia, serif; letter-spacing: 4px; outline: none; }
-  .check-btn { margin-top: 10px; width: 100%; background: #7C3AED; color: white; border: none; border-radius: 10px; padding: 14px; font-size: 1rem; font-weight: bold; cursor: pointer; }
-  .next-btn { margin-top: 10px; width: 100%; background: #F9D923; color: #3B0764; border: none; border-radius: 10px; padding: 14px; font-size: 1.1rem; font-weight: bold; cursor: pointer; display: none; }
+  .hint { font-size: 0.75rem; color: #A78BFA; text-align: center; margin-top: 8px; font-style: italic; }
   .done-card { display: none; background: white; border-radius: 14px; padding: 28px; width: 100%; max-width: 440px; text-align: center; margin-bottom: 12px; }
   .done-title { font-size: 1.3rem; color: #7C3AED; font-weight: bold; margin-bottom: 8px; }
   .done-msg { color: #6D28D9; margin-bottom: 16px; }
@@ -67,8 +66,7 @@
     placeholder="type here"
     autocomplete="off" autocorrect="off"
     autocapitalize="off" spellcheck="false" />
-  <button class="check-btn" id="checkBtn">Check My Spelling</button>
-  <button class="next-btn" id="nextBtn">Next Word</button>
+  <div class="hint">Press Enter to check</div>
 </div>
 
 <div class="done-card" id="doneCard">
@@ -113,10 +111,12 @@ var score = 0;
 var mastered = 0;
 var streaks = {};
 var curAudio = null;
+var advancing = false;
 
 function load(n) {
   idx = n;
   copy = false;
+  advancing = false;
   if (idx >= W.length) {
     document.getElementById("doneCard").style.display = "block";
     document.getElementById("wordCard").style.display = "none";
@@ -134,13 +134,12 @@ function load(n) {
   inp.value = "";
   inp.style.borderColor = "#DDD6FE";
   inp.style.background = "white";
+  inp.disabled = false;
   document.getElementById("feedbackBox").style.display = "none";
-  document.getElementById("checkBtn").style.display = "block";
-  document.getElementById("checkBtn").textContent = "Check My Spelling";
-  document.getElementById("nextBtn").style.display = "none";
   document.getElementById("typeLabel").textContent = "Now spell the word";
   document.getElementById("typeCard").style.display = "block";
   document.getElementById("wordCard").style.display = "block";
+  inp.focus();
 }
 
 function playWord() {
@@ -164,45 +163,49 @@ function fb(bg, col, msg) {
 }
 
 function check() {
-  var typed = document.getElementById("inp").value.trim().toLowerCase();
+  if (advancing) return;
+  var inp = document.getElementById("inp");
+  var typed = inp.value.trim().toLowerCase();
   if (typed === "") return;
   var w = W[idx].word;
 
   if (copy) {
     if (typed === w) {
-      document.getElementById("inp").style.borderColor = "#16a34a";
-      document.getElementById("inp").style.background = "#f0fdf4";
-      fb("#EDE9FE", "#6D28D9", "Good work! Tap Next Word.");
-      document.getElementById("checkBtn").style.display = "none";
-      document.getElementById("nextBtn").style.display = "block";
-      copy = false;
+      inp.style.borderColor = "#16a34a";
+      inp.style.background = "#f0fdf4";
+      inp.disabled = true;
+      fb("#EDE9FE", "#6D28D9", "Good work! Moving on...");
+      advancing = true;
+      var next = idx + 1;
+      setTimeout(function() { load(next); }, 1200);
     } else {
-      document.getElementById("inp").value = "";
+      inp.value = "";
       fb("#fee2e2", "#b91c1c", "Try again -- type: " + w);
     }
     return;
   }
 
   if (typed === w) {
-    document.getElementById("inp").style.borderColor = "#16a34a";
-    document.getElementById("inp").style.background = "#f0fdf4";
+    inp.style.borderColor = "#16a34a";
+    inp.style.background = "#f0fdf4";
+    inp.disabled = true;
     score++;
     if (!streaks[w]) streaks[w] = 0;
     streaks[w]++;
     if (streaks[w] >= 2) mastered++;
     updateScore();
     fb("#dcfce7", "#15803d", "Brilliant! That is correct!");
-    document.getElementById("checkBtn").style.display = "none";
-    document.getElementById("nextBtn").style.display = "block";
+    advancing = true;
+    var next = idx + 1;
+    setTimeout(function() { load(next); }, 1200);
   } else {
     if (!streaks[w]) streaks[w] = 0;
     streaks[w] = 0;
     fb("#fee2e2", "#b91c1c", "Not quite! Correct spelling: " + w + ". Now type it correctly below.");
-    document.getElementById("inp").value = "";
-    document.getElementById("inp").style.borderColor = "#DDD6FE";
-    document.getElementById("inp").style.background = "white";
+    inp.value = "";
+    inp.style.borderColor = "#DDD6FE";
+    inp.style.background = "white";
     document.getElementById("typeLabel").textContent = "Type the correct spelling once";
-    document.getElementById("checkBtn").textContent = "Done";
     copy = true;
   }
 }
@@ -217,15 +220,15 @@ function updateScore() {
 }
 
 document.getElementById("listenBtn").onclick = function() { playWord(); };
-document.getElementById("checkBtn").onclick = function() { check(); };
-document.getElementById("nextBtn").onclick = function() { load(idx + 1); };
 document.getElementById("restartBtn").onclick = function() {
   score = 0; mastered = 0; streaks = {};
   updateScore();
   document.getElementById("doneCard").style.display = "none";
   load(0);
 };
-document.getElementById("inp").onkeydown = function(e) { if (e.keyCode === 13) { e.preventDefault(); check(); } };
+document.getElementById("inp").onkeydown = function(e) {
+  if (e.keyCode === 13) { e.preventDefault(); check(); }
+};
 
 load(0);
 </script>
