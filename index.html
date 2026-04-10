@@ -6,182 +6,64 @@
 <title>Amoha Spelling Stars</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: Georgia, serif;
-    background: #7C3AED;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .header {
-    width: 100%;
-    background: #7C3AED;
-    padding: 28px 20px 20px;
-    text-align: center;
-  }
+  body { font-family: Georgia, serif; background: #7C3AED; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+  .header { width: 100%; background: #7C3AED; padding: 28px 20px 20px; text-align: center; }
   .header-stars { font-size: 1.4rem; letter-spacing: 6px; margin-bottom: 8px; color: #F9D923; }
   .header h1 { font-size: 1.9rem; font-weight: bold; color: white; line-height: 1.2; }
   .header h1 span { color: #F9D923; }
   .header p { color: #DDD6FE; font-size: 0.9rem; margin-top: 6px; font-style: italic; }
-
-  .score-bar {
-    width: 100%;
-    background: #6D28D9;
-    padding: 10px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  .score-bar { width: 100%; background: #6D28D9; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; }
   .score-item { text-align: center; }
   .score-item .label { font-size: 0.68rem; color: #DDD6FE; text-transform: uppercase; letter-spacing: 1px; }
   .score-item .value { font-size: 1.3rem; font-weight: bold; color: #F9D923; }
-
-  .main {
-    width: 100%;
-    max-width: 480px;
-    padding: 20px 20px 40px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
+  .main { width: 100%; max-width: 480px; padding: 20px 20px 40px; flex: 1; display: flex; flex-direction: column; gap: 16px; }
   .progress-wrap { background: #6D28D9; border-radius: 999px; height: 8px; width: 100%; overflow: hidden; }
   .progress-fill { height: 100%; background: #F9D923; border-radius: 999px; transition: width 0.5s ease; }
   .progress-label { text-align: center; color: #DDD6FE; font-size: 0.78rem; margin-top: 4px; }
-
-  .card {
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-  }
-  .card-title {
-    font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1.5px;
-    color: #7C3AED; font-weight: bold; margin-bottom: 12px; text-align: center;
-  }
+  .card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); }
+  .card-title { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1.5px; color: #7C3AED; font-weight: bold; margin-bottom: 12px; text-align: center; }
   .level-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-  .level-btn {
-    background: #EDE9FE; color: #7C3AED; border: 2px solid #DDD6FE;
-    border-radius: 12px; padding: 9px 20px; font-size: 0.95rem;
-    font-weight: bold; cursor: pointer; transition: all 0.2s;
-  }
+  .level-btn { background: #EDE9FE; color: #7C3AED; border: 2px solid #DDD6FE; border-radius: 12px; padding: 9px 20px; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: all 0.2s; }
   .level-btn.active { background: #7C3AED; color: white; border-color: #7C3AED; }
-
-  .word-card {
-    background: white; border-radius: 20px; padding: 28px 20px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18); text-align: center;
-    display: flex; flex-direction: column; align-items: center; gap: 14px;
-  }
+  .word-card { background: white; border-radius: 20px; padding: 28px 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; }
   .word-number { font-size: 0.72rem; color: #A78BFA; text-transform: uppercase; letter-spacing: 2px; }
-
-  .listen-btn {
-    background: #7C3AED; color: white; border: none; border-radius: 50%;
-    width: 80px; height: 80px; font-size: 2.2rem; cursor: pointer;
-    box-shadow: 0 4px 18px rgba(124,58,237,0.4);
-    transition: transform 0.15s; display: flex; align-items: center; justify-content: center;
-  }
+  .listen-btn { background: #7C3AED; color: white; border: none; border-radius: 50%; width: 80px; height: 80px; font-size: 2.2rem; cursor: pointer; box-shadow: 0 4px 18px rgba(124,58,237,0.4); transition: transform 0.15s; display: flex; align-items: center; justify-content: center; }
   .listen-btn:active { transform: scale(0.91); }
   .listen-btn.playing { background: #6D28D9; }
-
   .listen-label { font-size: 0.8rem; color: #A78BFA; font-style: italic; }
-
-  .rule-badge {
-    background: #EDE9FE; color: #6D28D9; border-radius: 10px;
-    padding: 10px 16px; font-size: 0.8rem; line-height: 1.5;
-    text-align: center; max-width: 290px;
-  }
-  .rule-badge strong {
-    display: block; font-size: 0.68rem; text-transform: uppercase;
-    letter-spacing: 1px; color: #7C3AED; margin-bottom: 3px;
-  }
-
-  .type-card {
-    background: white; border-radius: 20px; padding: 22px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18); text-align: center;
-  }
-  .type-label {
-    font-size: 0.78rem; color: #7C3AED; text-transform: uppercase;
-    letter-spacing: 1.5px; margin-bottom: 12px; font-weight: bold;
-  }
-  .spell-input {
-    width: 100%; border: 3px solid #DDD6FE; border-radius: 14px;
-    padding: 14px 18px; font-size: 1.6rem; text-align: center;
-    color: #3B0764; font-weight: bold; outline: none;
-    transition: border-color 0.2s; font-family: Georgia, serif; letter-spacing: 4px;
-  }
+  .rule-badge { background: #EDE9FE; color: #6D28D9; border-radius: 10px; padding: 10px 16px; font-size: 0.8rem; line-height: 1.5; text-align: center; max-width: 290px; }
+  .rule-badge strong { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: #7C3AED; margin-bottom: 3px; }
+  .type-card { background: white; border-radius: 20px; padding: 22px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); text-align: center; }
+  .type-label { font-size: 0.78rem; color: #7C3AED; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; font-weight: bold; }
+  .spell-input { width: 100%; border: 3px solid #DDD6FE; border-radius: 14px; padding: 14px 18px; font-size: 1.6rem; text-align: center; color: #3B0764; font-weight: bold; outline: none; transition: border-color 0.2s; font-family: Georgia, serif; letter-spacing: 4px; }
   .spell-input:focus { border-color: #7C3AED; }
   .spell-input.correct { border-color: #16a34a; background: #f0fdf4; }
   .spell-input.wrong { border-color: #dc2626; background: #fff0f0; }
-
-  .submit-btn {
-    margin-top: 12px; width: 100%; background: #7C3AED; color: white;
-    border: none; border-radius: 14px; padding: 15px; font-size: 1.05rem;
-    font-weight: bold; cursor: pointer; letter-spacing: 1px;
-    box-shadow: 0 4px 18px rgba(124,58,237,0.35); transition: transform 0.15s;
-  }
+  .submit-btn { margin-top: 12px; width: 100%; background: #7C3AED; color: white; border: none; border-radius: 14px; padding: 15px; font-size: 1.05rem; font-weight: bold; cursor: pointer; letter-spacing: 1px; box-shadow: 0 4px 18px rgba(124,58,237,0.35); transition: transform 0.15s; }
   .submit-btn:active { transform: scale(0.97); }
-
-  .feedback {
-    border-radius: 14px; padding: 14px 18px; text-align: center;
-    font-size: 1rem; font-weight: bold; display: none;
-  }
+  .feedback { border-radius: 14px; padding: 14px 18px; text-align: center; font-size: 1rem; font-weight: bold; display: none; }
   .feedback.show { display: block; }
   .feedback.correct-msg { background: #dcfce7; color: #15803d; border: 2px solid #86efac; }
   .feedback.wrong-msg { background: #fee2e2; color: #b91c1c; border: 2px solid #fca5a5; }
   .feedback.copy-msg { background: #EDE9FE; color: #6D28D9; border: 2px solid #c4b5fd; }
-
-  .correct-word {
-    font-size: 1.8rem; letter-spacing: 4px; color: #7C3AED;
-    font-weight: bold; display: block; margin-top: 6px;
-  }
-
-  .nav-row {
-    display: flex; justify-content: space-between;
-    align-items: center; gap: 12px;
-  }
-  .nav-btn {
-    flex: 1; padding: 14px; border-radius: 14px; border: none;
-    font-size: 1rem; font-weight: bold; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    gap: 8px; transition: transform 0.15s;
-  }
-  .nav-btn:active { transform: scale(0.96); }
-  .btn-back { background: white; color: #7C3AED; border: 2.5px solid #DDD6FE; }
-  .btn-forward { background: #F9D923; color: #3B0764; box-shadow: 0 4px 14px rgba(249,217,35,0.4); }
-  .btn-forward.hidden { visibility: hidden; pointer-events: none; }
-
+  .correct-word { font-size: 1.8rem; letter-spacing: 4px; color: #7C3AED; font-weight: bold; display: block; margin-top: 6px; }
+  .nav-row { display: flex; justify-content: center; align-items: center; }
+  .btn-back { background: white; color: #7C3AED; border: 2.5px solid #DDD6FE; padding: 14px 32px; border-radius: 14px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: transform 0.15s; }
+  .btn-back:active { transform: scale(0.96); }
   .stars-earned { text-align: center; padding: 10px 0 4px; }
   .stars-earned .star-row { font-size: 1.8rem; letter-spacing: 4px; }
   .stars-earned p { color: #DDD6FE; font-size: 0.8rem; margin-top: 4px; font-style: italic; }
-
   footer { width: 100%; text-align: center; padding: 14px; color: #C4B5FD; font-size: 0.75rem; font-style: italic; }
-
-  .celebrate {
-    position: fixed; inset: 0; background: rgba(124,58,237,0.92);
-    flex-direction: column; align-items: center;
-    justify-content: center; z-index: 100; display: none;
-  }
+  .celebrate { position: fixed; inset: 0; background: rgba(124,58,237,0.92); flex-direction: column; align-items: center; justify-content: center; z-index: 100; display: none; }
   .celebrate.show { display: flex; }
   .celebrate-text { font-size: 2.8rem; color: #F9D923; font-weight: bold; text-align: center; line-height: 1.2; }
   .celebrate-sub { color: white; font-size: 1.1rem; margin-top: 12px; font-style: italic; }
   .celebrate-stars { font-size: 2.5rem; letter-spacing: 8px; margin-top: 14px; }
-
-  .finished-card {
-    background: white; border-radius: 20px; padding: 32px 24px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18); text-align: center;
-    display: none;
-  }
+  .finished-card { background: white; border-radius: 20px; padding: 32px 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); text-align: center; display: none; }
   .finished-card.show { display: block; }
   .finished-card h2 { color: #7C3AED; font-size: 1.6rem; margin-bottom: 10px; }
   .finished-card p { color: #6D28D9; font-size: 1rem; margin-bottom: 16px; }
-  .restart-btn {
-    background: #7C3AED; color: white; border: none; border-radius: 14px;
-    padding: 14px 28px; font-size: 1rem; font-weight: bold; cursor: pointer;
-  }
+  .restart-btn { background: #7C3AED; color: white; border: none; border-radius: 14px; padding: 14px 28px; font-size: 1rem; font-weight: bold; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -208,7 +90,6 @@
 </div>
 
 <div class="main">
-
   <div>
     <div class="progress-wrap">
       <div class="progress-fill" id="progressFill" style="width:0%"></div>
@@ -243,7 +124,7 @@
       placeholder="type here"
       autocomplete="off" autocorrect="off"
       autocapitalize="off" spellcheck="false" />
-    <button class="submit-btn" id="submitBtn" onclick="checkAnswer()">Check My Spelling &#10003;</button>
+    <button class="submit-btn" id="submitBtn" onclick="checkAnswer()">Check My Spelling</button>
   </div>
 
   <div class="finished-card" id="finishedCard">
@@ -253,15 +134,13 @@
   </div>
 
   <div class="nav-row">
-    <button class="nav-btn btn-back" onclick="goBack()">&#8592; Back</button>
-    <button class="nav-btn btn-forward hidden" id="nextBtn" onclick="goNext()">Next &#8594;</button>
+    <button class="btn-back" onclick="goBack()">&#8592; Back</button>
   </div>
 
   <div class="stars-earned">
     <div class="star-row" id="starRow">&#9734; &#9734; &#9734; &#9734; &#9734;</div>
     <p id="starMsg">Earn stars by spelling correctly!</p>
   </div>
-
 </div>
 
 <footer>Made with love for Amoha &#127800;</footer>
@@ -319,8 +198,7 @@ function renderWord() {
   var idx = queue[currentIndex];
   var w = words[idx];
 
-  document.getElementById("wordNumber").textContent =
-    "Word " + (currentIndex + 1) + " of " + queue.length;
+  document.getElementById("wordNumber").textContent = "Word " + (currentIndex + 1) + " of " + queue.length;
   document.getElementById("ruleTitle").textContent = w.rule;
   document.getElementById("ruleText").textContent = w.ruleText;
 
@@ -332,14 +210,13 @@ function renderWord() {
   document.getElementById("feedbackBox").className = "feedback";
   document.getElementById("feedbackBox").innerHTML = "";
   document.getElementById("submitBtn").style.display = "block";
-  document.getElementById("nextBtn").className = "nav-btn btn-forward hidden";
 
   if (copyMode) {
     document.getElementById("typeLabel").textContent = "Type the correct spelling once";
-    document.getElementById("submitBtn").textContent = "Done \u2713";
+    document.getElementById("submitBtn").textContent = "Done";
   } else {
     document.getElementById("typeLabel").textContent = "Now spell the word";
-    document.getElementById("submitBtn").textContent = "Check My Spelling \u2713";
+    document.getElementById("submitBtn").textContent = "Check My Spelling";
   }
 
   updateProgress();
@@ -359,17 +236,12 @@ function playWord() {
   }
 
   var audio = new Audio();
-  audio.src = w.word + ".m4a?t=" + new Date().getTime();
-  audio.load();
+  audio.src = w.word + ".m4a";
   currentAudio = audio;
   btn.className = "listen-btn playing";
   audio.play();
-  audio.onended = function() {
-    btn.className = "listen-btn";
-  };
-  audio.onerror = function() {
-    btn.className = "listen-btn";
-  };
+  audio.onended = function() { btn.className = "listen-btn"; };
+  audio.onerror = function() { btn.className = "listen-btn"; };
 }
 
 function checkAnswer() {
@@ -384,10 +256,11 @@ function checkAnswer() {
   if (copyMode) {
     if (typed === w.word) {
       input.className = "spell-input correct";
-      showFeedback("copy-msg", "Good work! Now tap Next to continue.");
+      input.disabled = true;
+      showFeedback("copy-msg", "Good work! Moving to next word...");
       copyMode = false;
       document.getElementById("submitBtn").style.display = "none";
-      document.getElementById("nextBtn").className = "nav-btn btn-forward";
+      setTimeout(function() { goNext(); }, 1500);
     } else {
       input.value = "";
       showFeedback("wrong-msg", "Try again -- type: " + w.word);
@@ -397,15 +270,15 @@ function checkAnswer() {
 
   if (typed === w.word) {
     input.className = "spell-input correct";
+    input.disabled = true;
     stars++;
     if (!correctStreak[w.word]) correctStreak[w.word] = 0;
     correctStreak[w.word]++;
     if (correctStreak[w.word] >= 2) mastered[w.word] = true;
-    showFeedback("correct-msg", "Brilliant! That is correct!");
     document.getElementById("submitBtn").style.display = "none";
-    document.getElementById("nextBtn").className = "nav-btn btn-forward";
     updateScore();
     showCelebrate();
+    setTimeout(function() { goNext(); }, 1800);
   } else {
     input.className = "spell-input wrong";
     if (!correctStreak[w.word]) correctStreak[w.word] = 0;
@@ -417,7 +290,7 @@ function checkAnswer() {
     input.value = "";
     input.className = "spell-input";
     document.getElementById("typeLabel").textContent = "Type the correct spelling once";
-    document.getElementById("submitBtn").textContent = "Done \u2713";
+    document.getElementById("submitBtn").textContent = "Done";
     scheduleRetry(idx);
   }
 }
@@ -447,14 +320,15 @@ function goNext() {
   history.push(currentIndex);
   currentIndex++;
   copyMode = false;
-  document.getElementById("doneDisplay").textContent = currentIndex;
   renderWord();
 }
 
 function goBack() {
   if (currentAudio) {
     currentAudio.pause();
-    currentAudio.currentTime = 0;
+    currentAudio.src = "";
+    currentAudio.load();
+    currentAudio = null;
   }
   if (history.length > 0) {
     currentIndex = history.pop();
@@ -469,7 +343,6 @@ function showFinished() {
   document.getElementById("wordCard").style.display = "none";
   document.getElementById("typeCard").style.display = "none";
   document.getElementById("feedbackBox").className = "feedback";
-  document.getElementById("nextBtn").className = "nav-btn btn-forward hidden";
   var fc = document.getElementById("finishedCard");
   fc.className = "finished-card show";
   var m = Object.keys(mastered).length;
@@ -482,6 +355,7 @@ function updateScore() {
   document.getElementById("starsDisplay").innerHTML = "&#9733; " + stars;
   var m = Object.keys(mastered).length;
   document.getElementById("masteredDisplay").innerHTML = "&#10003; " + m;
+  document.getElementById("doneDisplay").textContent = currentIndex;
   var filled = Math.min(stars, 5);
   var row = "";
   for (var i = 0; i < 5; i++) {
