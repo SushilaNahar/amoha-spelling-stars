@@ -23,33 +23,30 @@
   .card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); }
   .card-title { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1.5px; color: #7C3AED; font-weight: bold; margin-bottom: 12px; text-align: center; }
   .level-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-  .level-btn { background: #EDE9FE; color: #7C3AED; border: 2px solid #DDD6FE; border-radius: 12px; padding: 9px 20px; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+  .level-btn { background: #EDE9FE; color: #7C3AED; border: 2px solid #DDD6FE; border-radius: 12px; padding: 9px 20px; font-size: 0.95rem; font-weight: bold; cursor: pointer; }
   .level-btn.active { background: #7C3AED; color: white; border-color: #7C3AED; }
   .word-card { background: white; border-radius: 20px; padding: 28px 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; }
   .word-number { font-size: 0.72rem; color: #A78BFA; text-transform: uppercase; letter-spacing: 2px; }
-  .listen-btn { background: #7C3AED; color: white; border: none; border-radius: 50%; width: 80px; height: 80px; font-size: 2.2rem; cursor: pointer; box-shadow: 0 4px 18px rgba(124,58,237,0.4); transition: transform 0.15s; display: flex; align-items: center; justify-content: center; }
-  .listen-btn:active { transform: scale(0.91); }
+  .listen-btn { background: #7C3AED; color: white; border: none; border-radius: 50%; width: 80px; height: 80px; font-size: 2.2rem; cursor: pointer; box-shadow: 0 4px 18px rgba(124,58,237,0.4); display: flex; align-items: center; justify-content: center; }
   .listen-btn.playing { background: #6D28D9; }
   .listen-label { font-size: 0.8rem; color: #A78BFA; font-style: italic; }
   .rule-badge { background: #EDE9FE; color: #6D28D9; border-radius: 10px; padding: 10px 16px; font-size: 0.8rem; line-height: 1.5; text-align: center; max-width: 290px; }
   .rule-badge strong { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: #7C3AED; margin-bottom: 3px; }
   .type-card { background: white; border-radius: 20px; padding: 22px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); text-align: center; }
   .type-label { font-size: 0.78rem; color: #7C3AED; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; font-weight: bold; }
-  .spell-input { width: 100%; border: 3px solid #DDD6FE; border-radius: 14px; padding: 14px 18px; font-size: 1.6rem; text-align: center; color: #3B0764; font-weight: bold; outline: none; transition: border-color 0.2s; font-family: Georgia, serif; letter-spacing: 4px; }
+  .spell-input { width: 100%; border: 3px solid #DDD6FE; border-radius: 14px; padding: 14px 18px; font-size: 1.6rem; text-align: center; color: #3B0764; font-weight: bold; outline: none; font-family: Georgia, serif; letter-spacing: 4px; }
   .spell-input:focus { border-color: #7C3AED; }
   .spell-input.correct { border-color: #16a34a; background: #f0fdf4; }
   .spell-input.wrong { border-color: #dc2626; background: #fff0f0; }
-  .submit-btn { margin-top: 12px; width: 100%; background: #7C3AED; color: white; border: none; border-radius: 14px; padding: 15px; font-size: 1.05rem; font-weight: bold; cursor: pointer; letter-spacing: 1px; box-shadow: 0 4px 18px rgba(124,58,237,0.35); transition: transform 0.15s; }
-  .submit-btn:active { transform: scale(0.97); }
+  .submit-btn { margin-top: 12px; width: 100%; background: #7C3AED; color: white; border: none; border-radius: 14px; padding: 15px; font-size: 1.05rem; font-weight: bold; cursor: pointer; letter-spacing: 1px; box-shadow: 0 4px 18px rgba(124,58,237,0.35); }
   .feedback { border-radius: 14px; padding: 14px 18px; text-align: center; font-size: 1rem; font-weight: bold; display: none; }
   .feedback.show { display: block; }
   .feedback.correct-msg { background: #dcfce7; color: #15803d; border: 2px solid #86efac; }
   .feedback.wrong-msg { background: #fee2e2; color: #b91c1c; border: 2px solid #fca5a5; }
   .feedback.copy-msg { background: #EDE9FE; color: #6D28D9; border: 2px solid #c4b5fd; }
   .correct-word { font-size: 1.8rem; letter-spacing: 4px; color: #7C3AED; font-weight: bold; display: block; margin-top: 6px; }
-  .nav-row { display: flex; justify-content: center; align-items: center; }
-  .btn-back { background: white; color: #7C3AED; border: 2.5px solid #DDD6FE; padding: 14px 32px; border-radius: 14px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: transform 0.15s; }
-  .btn-back:active { transform: scale(0.96); }
+  .nav-row { display: flex; justify-content: center; }
+  .btn-back { background: white; color: #7C3AED; border: 2.5px solid #DDD6FE; padding: 14px 32px; border-radius: 14px; font-size: 1rem; font-weight: bold; cursor: pointer; }
   .stars-earned { text-align: center; padding: 10px 0 4px; }
   .stars-earned .star-row { font-size: 1.8rem; letter-spacing: 4px; }
   .stars-earned p { color: #DDD6FE; font-size: 0.8rem; margin-top: 4px; font-style: italic; }
@@ -100,15 +97,15 @@
   <div class="card">
     <div class="card-title">Choose Your Level</div>
     <div class="level-buttons">
-      <button class="level-btn" id="lvl1" onclick="selectLevel(1)">Level 1</button>
-      <button class="level-btn active" id="lvl2" onclick="selectLevel(2)">Level 2</button>
-      <button class="level-btn" id="lvl3" onclick="selectLevel(3)">Level 3</button>
+      <button id="lvl1">Level 1</button>
+      <button id="lvl2" class="active" style="background:#7C3AED;color:white;border-color:#7C3AED;border-radius:12px;padding:9px 20px;font-size:0.95rem;font-weight:bold;cursor:pointer;">Level 2</button>
+      <button id="lvl3">Level 3</button>
     </div>
   </div>
 
   <div class="word-card" id="wordCard">
     <div class="word-number" id="wordNumber">Word 1 of 2</div>
-    <button class="listen-btn" id="listenBtn" onclick="playWord()">&#9654;</button>
+    <button class="listen-btn" id="listenBtn">&#9654;</button>
     <div class="listen-label">Tap to hear the word</div>
     <div class="rule-badge">
       <strong id="ruleTitle">Spelling Rule</strong>
@@ -124,17 +121,17 @@
       placeholder="type here"
       autocomplete="off" autocorrect="off"
       autocapitalize="off" spellcheck="false" />
-    <button class="submit-btn" id="submitBtn" onclick="checkAnswer()">Check My Spelling</button>
+    <button class="submit-btn" id="submitBtn">Check My Spelling</button>
   </div>
 
   <div class="finished-card" id="finishedCard">
     <h2>&#9733; Well done Amoha! &#9733;</h2>
     <p id="finishedMsg">You have finished all the words!</p>
-    <button class="restart-btn" onclick="initLevel(currentLevel)">Play Again</button>
+    <button class="restart-btn" id="restartBtn">Play Again</button>
   </div>
 
   <div class="nav-row">
-    <button class="btn-back" onclick="goBack()">&#8592; Back</button>
+    <button class="btn-back" id="backBtn">&#8592; Back</button>
   </div>
 
   <div class="stars-earned">
@@ -231,7 +228,6 @@ function playWord() {
   if (currentAudio) {
     currentAudio.pause();
     currentAudio.src = "";
-    currentAudio.load();
     currentAudio = null;
   }
 
@@ -281,11 +277,9 @@ function checkAnswer() {
     setTimeout(function() { goNext(); }, 1800);
   } else {
     input.className = "spell-input wrong";
-    if (!correctStreak[w.word]) correctStreak[w.word] = 0;
     correctStreak[w.word] = 0;
-    var fb = document.getElementById("feedbackBox");
-    fb.className = "feedback show wrong-msg";
-    fb.innerHTML = "Not quite! The correct spelling is:<br><span class=\"correct-word\">" + w.word + "</span><br>Now type it correctly once below.";
+    var msg = "Not quite! The correct spelling is: " + w.word + ". Now type it correctly once below.";
+    showFeedback("wrong-msg", msg);
     copyMode = true;
     input.value = "";
     input.className = "spell-input";
@@ -307,7 +301,7 @@ function scheduleRetry(idx) {
 function showFeedback(cls, msg) {
   var fb = document.getElementById("feedbackBox");
   fb.className = "feedback show " + cls;
-  fb.innerHTML = msg;
+  fb.textContent = msg;
 }
 
 function showCelebrate() {
@@ -327,7 +321,6 @@ function goBack() {
   if (currentAudio) {
     currentAudio.pause();
     currentAudio.src = "";
-    currentAudio.load();
     currentAudio = null;
   }
   if (history.length > 0) {
@@ -375,15 +368,61 @@ function updateProgress() {
     currentIndex + " of " + total + " words practised";
 }
 
+window.onload = function() {
+  document.getElementById("submitBtn").addEventListener("touchend", function(e) {
+    e.preventDefault();
+    checkAnswer();
+  });
+  document.getElementById("submitBtn").addEventListener("click", function(e) {
+    e.preventDefault();
+    checkAnswer();
+  });
+  document.getElementById("listenBtn").addEventListener("touchend", function(e) {
+    e.preventDefault();
+    playWord();
+  });
+  document.getElementById("listenBtn").addEventListener("click", function() {
+    playWord();
+  });
+  document.getElementById("backBtn").addEventListener("touchend", function(e) {
+    e.preventDefault();
+    goBack();
+  });
+  document.getElementById("backBtn").addEventListener("click", function() {
+    goBack();
+  });
+  document.getElementById("restartBtn").addEventListener("click", function() {
+    initLevel(currentLevel);
+  });
+  document.getElementById("spellInput").addEventListener("keydown", function(e) {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      checkAnswer();
+    }
+  });
+  document.getElementById("lvl1").addEventListener("click", function() { selectLevel(1); });
+  document.getElementById("lvl2").addEventListener("click", function() { selectLevel(2); });
+  document.getElementById("lvl3").addEventListener("click", function() { selectLevel(3); });
+  initLevel(2);
+};
+
 function selectLevel(n) {
-  for (var i = 1; i <= 3; i++) {
-    document.getElementById("lvl" + i).className = "level-btn";
+  var btns = [
+    document.getElementById("lvl1"),
+    document.getElementById("lvl2"),
+    document.getElementById("lvl3")
+  ];
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].className = "level-btn";
+    btns[i].style.background = "#EDE9FE";
+    btns[i].style.color = "#7C3AED";
+    btns[i].style.borderColor = "#DDD6FE";
   }
-  document.getElementById("lvl" + n).className = "level-btn active";
+  btns[n-1].style.background = "#7C3AED";
+  btns[n-1].style.color = "white";
+  btns[n-1].style.borderColor = "#7C3AED";
   initLevel(n);
 }
-
-initLevel(2);
 </script>
 </body>
 </html>
