@@ -336,10 +336,10 @@ function renderWord() {
 
   if (copyMode) {
     document.getElementById("typeLabel").textContent = "Type the correct spelling once";
-    document.getElementById("submitBtn").textContent = "Done ✓";
+    document.getElementById("submitBtn").textContent = "Done \u2713";
   } else {
     document.getElementById("typeLabel").textContent = "Now spell the word";
-    document.getElementById("submitBtn").textContent = "Check My Spelling ✓";
+    document.getElementById("submitBtn").textContent = "Check My Spelling \u2713";
   }
 
   updateProgress();
@@ -353,13 +353,21 @@ function playWord() {
 
   if (currentAudio) {
     currentAudio.pause();
-    currentAudio.currentTime = 0;
+    currentAudio.src = "";
+    currentAudio.load();
+    currentAudio = null;
   }
 
-  currentAudio = new Audio(w.word + ".m4a");
+  var audio = new Audio();
+  audio.src = w.word + ".m4a?t=" + new Date().getTime();
+  audio.load();
+  currentAudio = audio;
   btn.className = "listen-btn playing";
-  currentAudio.play();
-  currentAudio.onended = function() {
+  audio.play();
+  audio.onended = function() {
+    btn.className = "listen-btn";
+  };
+  audio.onerror = function() {
     btn.className = "listen-btn";
   };
 }
@@ -404,12 +412,12 @@ function checkAnswer() {
     correctStreak[w.word] = 0;
     var fb = document.getElementById("feedbackBox");
     fb.className = "feedback show wrong-msg";
-    fb.innerHTML = "Not quite! The correct spelling is:<br><span class='correct-word'>" + w.word + "</span><br>Now type it correctly once below.";
+    fb.innerHTML = "Not quite! The correct spelling is:<br><span class=\"correct-word\">" + w.word + "</span><br>Now type it correctly once below.";
     copyMode = true;
     input.value = "";
     input.className = "spell-input";
     document.getElementById("typeLabel").textContent = "Type the correct spelling once";
-    document.getElementById("submitBtn").textContent = "Done ✓";
+    document.getElementById("submitBtn").textContent = "Done \u2713";
     scheduleRetry(idx);
   }
 }
