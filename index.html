@@ -50,16 +50,11 @@
   .stars-earned .star-row { font-size: 1.8rem; letter-spacing: 4px; }
   .stars-earned p { color: #DDD6FE; font-size: 0.8rem; margin-top: 4px; font-style: italic; }
   footer { width: 100%; text-align: center; padding: 14px; color: #C4B5FD; font-size: 0.75rem; font-style: italic; }
-  .celebrate {
-    position: fixed; inset: 0; background: rgba(124,58,237,0.92);
-    flex-direction: column; align-items: center; justify-content: center;
-    z-index: 100; display: none; cursor: pointer;
-  }
+  .celebrate { position: fixed; inset: 0; background: rgba(124,58,237,0.92); flex-direction: column; align-items: center; justify-content: center; z-index: 100; display: none; pointer-events: none; }
   .celebrate.show { display: flex; }
   .celebrate-text { font-size: 2.8rem; color: #F9D923; font-weight: bold; text-align: center; line-height: 1.2; }
   .celebrate-sub { color: white; font-size: 1.1rem; margin-top: 12px; }
   .celebrate-stars { font-size: 2.5rem; letter-spacing: 8px; margin-top: 14px; }
-  .celebrate-tap { color: #DDD6FE; font-size: 0.85rem; margin-top: 20px; font-style: italic; }
   .finished-card { background: white; border-radius: 20px; padding: 32px 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); text-align: center; display: none; }
   .finished-card.show { display: block; }
   .finished-card h2 { color: #7C3AED; font-size: 1.6rem; margin-bottom: 10px; }
@@ -150,7 +145,6 @@
   <div class="celebrate-text">&#127775; Brilliant!<br>Amoha! &#127775;</div>
   <div class="celebrate-sub">That is correct!</div>
   <div class="celebrate-stars">&#9733; &#9733; &#9733;</div>
-  <div class="celebrate-tap">Tap anywhere to continue</div>
 </div>
 
 <script>
@@ -170,7 +164,7 @@ var correctStreak = {};
 var mastered = {};
 var history = [];
 var currentAudio = null;
-var waitingToAdvance = false;
+var celebrateTimer = null;
 
 function initLevel(level) {
   currentLevel = level;
@@ -185,7 +179,8 @@ function initLevel(level) {
   stars = 0;
   correctStreak = {};
   mastered = {};
-  waitingToAdvance = false;
+  if (celebrateTimer) { clearTimeout(celebrateTimer); celebrateTimer = null; }
+  document.getElementById("celebrate").className = "celebrate";
   document.getElementById("finishedCard").className = "finished-card";
   document.getElementById("wordCard").style.display = "";
   document.getElementById("typeCard").style.display = "";
@@ -248,7 +243,6 @@ function playWord() {
 }
 
 function checkAnswer() {
-  if (waitingToAdvance) return;
   var words = WORDS[currentLevel];
   var idx = queue[currentIndex];
   var w = words[idx];
@@ -264,9 +258,8 @@ function checkAnswer() {
       showFeedback("copy-msg", "Good work! Moving to next word...");
       copyMode = false;
       document.getElementById("submitBtn").style.display = "none";
-      waitingToAdvance = true;
-      setTimeout(function() {
-        waitingToAdvance = false;
+      celebrateTimer = setTimeout(function() {
+        celebrateTimer = null;
         goNext();
       }, 1500);
     } else {
@@ -285,8 +278,12 @@ function checkAnswer() {
     if (correctStreak[w.word] >= 2) mastered[w.word] = true;
     document.getElementById("submitBtn").style.display = "none";
     updateScore();
-    waitingToAdvance = true;
-    showCelebrate();
+    document.getElementById("celebrate").className = "celebrate show";
+    celebrateTimer = setTimeout(function() {
+      celebrateTimer = null;
+      document.getElementById("celebrate").className = "celebrate";
+      goNext();
+    }, 2000);
   } else {
     input.className = "spell-input wrong";
     correctStreak[w.word] = 0;
@@ -315,18 +312,6 @@ function showFeedback(cls, msg) {
   fb.textContent = msg;
 }
 
-function showCelebrate() {
-  var cel = document.getElementById("celebrate");
-  cel.className = "celebrate show";
-}
-
-function hideCelebrate() {
-  var cel = document.getElementById("celebrate");
-  cel.className = "celebrate";
-  waitingToAdvance = false;
-  goNext();
-}
-
 function goNext() {
   history.push(currentIndex);
   currentIndex++;
@@ -335,18 +320,15 @@ function goNext() {
 }
 
 function goBack() {
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.src = "";
-    currentAudio = null;
-  }
+  if (celebrateTimer) { clearTimeout(celebrateTimer); celebrateTimer = null; }
+  document.getElementById("celebrate").className = "celebrate";
+  if (currentAudio) { currentAudio.pause(); currentAudio.src = ""; currentAudio = null; }
   if (history.length > 0) {
     currentIndex = history.pop();
   } else if (currentIndex > 0) {
     currentIndex--;
   }
   copyMode = false;
-  waitingToAdvance = false;
   renderWord();
 }
 
@@ -354,8 +336,7 @@ function showFinished() {
   document.getElementById("wordCard").style.display = "none";
   document.getElementById("typeCard").style.display = "none";
   document.getElementById("feedbackBox").className = "feedback";
-  var fc = document.getElementById("finishedCard");
-  fc.className = "finished-card show";
+  document.getElementById("finishedCard").className = "finished-card show";
   var m = Object.keys(mastered).length;
   document.getElementById("finishedMsg").textContent =
     "You got " + stars + " star" + (stars === 1 ? "" : "s") +
@@ -389,26 +370,17 @@ function updateProgress() {
 window.onload = function() {
   document.getElementById("submitBtn").addEventListener("click", function() { checkAnswer(); });
   document.getElementById("submitBtn").addEventListener("touchend", function(e) { e.preventDefault(); checkAnswer(); });
-
   document.getElementById("listenBtn").addEventListener("click", function() { playWord(); });
   document.getElementById("listenBtn").addEventListener("touchend", function(e) { e.preventDefault(); playWord(); });
-
   document.getElementById("backBtn").addEventListener("click", function() { goBack(); });
   document.getElementById("backBtn").addEventListener("touchend", function(e) { e.preventDefault(); goBack(); });
-
   document.getElementById("restartBtn").addEventListener("click", function() { initLevel(currentLevel); });
-
-  document.getElementById("celebrate").addEventListener("click", function() { hideCelebrate(); });
-  document.getElementById("celebrate").addEventListener("touchend", function(e) { e.preventDefault(); hideCelebrate(); });
-
   document.getElementById("spellInput").addEventListener("keydown", function(e) {
     if (e.keyCode === 13) { e.preventDefault(); checkAnswer(); }
   });
-
   document.getElementById("lvl1").addEventListener("click", function() { selectLevel(1); });
   document.getElementById("lvl2").addEventListener("click", function() { selectLevel(2); });
   document.getElementById("lvl3").addEventListener("click", function() { selectLevel(3); });
-
   initLevel(2);
 };
 
