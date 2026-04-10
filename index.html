@@ -358,14 +358,22 @@ function selectLevel(n) {
 }
 
 window.onload = function() {
-  document.getElementById("mainBtn").addEventListener("click", function() { mainBtnClick(); });
+  document.getElementById("mainBtn").addEventListener("click", function() {
+    if (mode === "check") { checkAnswer(); }
+    else if (mode === "copy") { checkCopy(); }
+    else if (mode === "next") { goNext(); }
+  });
   document.getElementById("listenBtn").addEventListener("click", function() { playWord(); });
   document.getElementById("listenBtn").addEventListener("touchend", function(e) { e.preventDefault(); playWord(); });
   document.getElementById("backBtn").addEventListener("click", function() { goBack(); });
   document.getElementById("backBtn").addEventListener("touchend", function(e) { e.preventDefault(); goBack(); });
   document.getElementById("restartBtn").addEventListener("click", function() { initLevel(currentLevel); });
   document.getElementById("spellInput").addEventListener("keydown", function(e) {
-    if (e.keyCode === 13) { e.preventDefault(); mainBtnClick(); }
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      if (mode === "check") { checkAnswer(); }
+      else if (mode === "copy") { checkCopy(); }
+    }
   });
   document.getElementById("lvl1").addEventListener("click", function() { selectLevel(1); });
   document.getElementById("lvl2").addEventListener("click", function() { selectLevel(2); });
