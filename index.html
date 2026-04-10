@@ -225,7 +225,7 @@ function setMode(m) {
 }
 
 function mainBtnClick() {
-alert("mode is: " + mode);  if (mode === "check") {
+  if (mode === "check") {
     checkAnswer();
   } else if (mode === "next") {
     goNext();
@@ -254,10 +254,11 @@ function checkAnswer() {
   var idx = queue[currentIndex];
   var w = words[idx];
   var input = document.getElementById("spellInput");
+  alert("input value: [" + input.value + "]");
   var typed = input.value.trim().toLowerCase();
   if (typed === "") return;
 
-  if (typed === w.word) {alert("typed: " + typed + " word: " + w.word);
+  if (typed === w.word) {
     input.className = "spell-input correct";
     stars++;
     if (!correctStreak[w.word]) correctStreak[w.word] = 0;
