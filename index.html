@@ -156,10 +156,12 @@ function check() {
     if (typed === w) {
       document.getElementById("inp").style.borderColor = "#16a34a";
       document.getElementById("inp").style.background = "#f0fdf4";
-      fb("#EDE9FE", "#6D28D9", "Good work! Tap Next Word.");
+      fb("#EDE9FE", "#6D28D9", "Good work! Moving on...");
       document.getElementById("checkBtn").style.display = "none";
-      document.getElementById("nextBtn").style.display = "block";
+      document.getElementById("nextBtn").style.display = "none";
       copy = false;
+      var goTo = idx + 1;
+      window.setTimeout(function() { load(goTo); }, 1500);
     } else {
       document.getElementById("inp").value = "";
       fb("#fee2e2", "#b91c1c", "Try again -- type: " + w);
@@ -177,7 +179,9 @@ function check() {
     updateScore();
     fb("#dcfce7", "#15803d", "Brilliant! That is correct!");
     document.getElementById("checkBtn").style.display = "none";
-    document.getElementById("nextBtn").style.display = "block";
+    document.getElementById("nextBtn").style.display = "none";
+    var goTo = idx + 1;
+    window.setTimeout(function() { load(goTo); }, 1800);
   } else {
     if (!streaks[w]) streaks[w] = 0;
     streaks[w] = 0;
