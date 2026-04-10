@@ -208,19 +208,19 @@ function setMode(m) {
   var input = document.getElementById("spellInput");
   var label = document.getElementById("typeLabel");
   if (m === "check") {
-    btn.textContent = "Check My Spelling";
+    btn.innerHTML = "Check My Spelling";
     btn.className = "action-btn btn-check";
     input.disabled = false;
-    label.textContent = "Now spell the word";
+    label.innerHTML = "Now spell the word";
   } else if (m === "next") {
-    btn.innerHTML = "&#9733; Next Word &#9733;";
+    btn.innerHTML = "\u2605 Next Word \u2605";
     btn.className = "action-btn btn-next";
     input.disabled = true;
   } else if (m === "copy") {
-    btn.textContent = "Done";
+    btn.innerHTML = "Done";
     btn.className = "action-btn btn-copy";
     input.disabled = false;
-    label.textContent = "Type the correct spelling once";
+    label.innerHTML = "Type the correct spelling once";
   }
 }
 
