@@ -254,7 +254,6 @@ function checkAnswer() {
   var idx = queue[currentIndex];
   var w = words[idx];
   var input = document.getElementById("spellInput");
-  alert("input value: [" + input.value + "]");
   var typed = input.value.trim().toLowerCase();
   if (typed === "") return;
 
@@ -360,7 +359,6 @@ function selectLevel(n) {
 
 window.onload = function() {
   document.getElementById("mainBtn").addEventListener("click", function() { mainBtnClick(); });
-  document.getElementById("mainBtn").addEventListener("touchend", function(e) { e.preventDefault(); mainBtnClick(); });
   document.getElementById("listenBtn").addEventListener("click", function() { playWord(); });
   document.getElementById("listenBtn").addEventListener("touchend", function(e) { e.preventDefault(); playWord(); });
   document.getElementById("backBtn").addEventListener("click", function() { goBack(); });
