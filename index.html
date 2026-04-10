@@ -66,7 +66,7 @@
     placeholder="type here"
     autocomplete="off" autocorrect="off"
     autocapitalize="off" spellcheck="false" />
-  <div class="hint">Press Enter to check</div>
+  <div class="hint" id="hint">Press Enter to check</div>
 </div>
 
 <div class="done-card" id="doneCard">
@@ -107,16 +107,16 @@ var W = [
 
 var idx = 0;
 var copy = false;
+var correct = false;
 var score = 0;
 var mastered = 0;
 var streaks = {};
 var curAudio = null;
-var advancing = false;
 
 function load(n) {
   idx = n;
   copy = false;
-  advancing = false;
+  correct = false;
   if (idx >= W.length) {
     document.getElementById("doneCard").style.display = "block";
     document.getElementById("wordCard").style.display = "none";
@@ -134,12 +134,11 @@ function load(n) {
   inp.value = "";
   inp.style.borderColor = "#DDD6FE";
   inp.style.background = "white";
-  inp.disabled = false;
   document.getElementById("feedbackBox").style.display = "none";
   document.getElementById("typeLabel").textContent = "Now spell the word";
+  document.getElementById("hint").textContent = "Press Enter to check";
   document.getElementById("typeCard").style.display = "block";
   document.getElementById("wordCard").style.display = "block";
-  inp.focus();
 }
 
 function playWord() {
@@ -162,9 +161,14 @@ function fb(bg, col, msg) {
   b.textContent = msg;
 }
 
-function check() {
-  if (advancing) return;
+function onEnter() {
   var inp = document.getElementById("inp");
+
+  if (correct) {
+    load(idx + 1);
+    return;
+  }
+
   var typed = inp.value.trim().toLowerCase();
   if (typed === "") return;
   var w = W[idx].word;
@@ -173,11 +177,9 @@ function check() {
     if (typed === w) {
       inp.style.borderColor = "#16a34a";
       inp.style.background = "#f0fdf4";
-      inp.disabled = true;
-      fb("#EDE9FE", "#6D28D9", "Good work! Moving on...");
-      advancing = true;
-      var next = idx + 1;
-      setTimeout(function() { load(next); }, 1200);
+      fb("#EDE9FE", "#6D28D9", "Good work!");
+      correct = true;
+      document.getElementById("hint").textContent = "Press Enter for next word";
     } else {
       inp.value = "";
       fb("#fee2e2", "#b91c1c", "Try again -- type: " + w);
@@ -188,16 +190,14 @@ function check() {
   if (typed === w) {
     inp.style.borderColor = "#16a34a";
     inp.style.background = "#f0fdf4";
-    inp.disabled = true;
     score++;
     if (!streaks[w]) streaks[w] = 0;
     streaks[w]++;
     if (streaks[w] >= 2) mastered++;
     updateScore();
     fb("#dcfce7", "#15803d", "Brilliant! That is correct!");
-    advancing = true;
-    var next = idx + 1;
-    setTimeout(function() { load(next); }, 1200);
+    correct = true;
+    document.getElementById("hint").textContent = "Press Enter for next word";
   } else {
     if (!streaks[w]) streaks[w] = 0;
     streaks[w] = 0;
@@ -227,7 +227,7 @@ document.getElementById("restartBtn").onclick = function() {
   load(0);
 };
 document.getElementById("inp").onkeydown = function(e) {
-  if (e.keyCode === 13) { e.preventDefault(); check(); }
+  if (e.keyCode === 13) { e.preventDefault(); onEnter(); }
 };
 
 load(0);
