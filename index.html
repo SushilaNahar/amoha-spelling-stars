@@ -130,19 +130,6 @@ function load(n) {
   document.getElementById("typeLabel").textContent = "Now spell the word";
 }
 
-function playWord() {
-  var wordToPlay = W[idx].word;
-  var btn = document.getElementById("listenBtn");
-  if (audio) { audio.pause(); audio.src = ""; audio = null; }
-  var a = new Audio();
-  a.src = wordToPlay + ".m4a";
-  audio = a;
-  btn.style.background = "#6D28D9";
-  a.play();
-  a.onended = function() { btn.style.background = "#7C3AED"; };
-  a.onerror = function() { btn.style.background = "#7C3AED"; };
-}
-
 function fb(bg, col, msg) {
   var b = document.getElementById("feedbackBox");
   b.style.display = "block";
@@ -150,6 +137,19 @@ function fb(bg, col, msg) {
   b.style.color = col;
   b.style.border = "2px solid " + col;
   b.textContent = msg;
+}
+
+function playWord() {
+  var wordToPlay = W[idx].word;
+  var btn = document.getElementById("listenBtn");
+  if (audio) { audio.pause(); audio.src = ""; audio = null; }
+  var a = new Audio();
+  a.src = wordToPlay + ".m4a?v=" + idx;
+  audio = a;
+  btn.style.background = "#6D28D9";
+  a.play();
+  a.onended = function() { btn.style.background = "#7C3AED"; };
+  a.onerror = function() { btn.style.background = "#7C3AED"; };
 }
 
 function check() {
@@ -161,10 +161,12 @@ function check() {
     if (typed === w) {
       document.getElementById("inp").style.borderColor = "#16a34a";
       document.getElementById("inp").style.background = "#f0fdf4";
-      fb("#EDE9FE", "#6D28D9", "Good work! Tap Next Word.");
+      fb("#EDE9FE", "#6D28D9", "Good work! Moving on...");
       document.getElementById("checkBtn").style.display = "none";
-      document.getElementById("nextBtn").style.display = "block";
+      document.getElementById("nextBtn").style.display = "none";
       copy = false;
+      var nextIdx = idx + 1;
+      setTimeout(function() { load(nextIdx); }, 1500);
     } else {
       document.getElementById("inp").value = "";
       fb("#fee2e2", "#b91c1c", "Try again -- type: " + w);
@@ -182,7 +184,9 @@ function check() {
     updateScore();
     fb("#dcfce7", "#15803d", "Brilliant! That is correct!");
     document.getElementById("checkBtn").style.display = "none";
-    document.getElementById("nextBtn").style.display = "block";
+    document.getElementById("nextBtn").style.display = "none";
+    var nextIdx = idx + 1;
+    setTimeout(function() { load(nextIdx); }, 1800);
   } else {
     if (!streaks[w]) streaks[w] = 0;
     streaks[w] = 0;
