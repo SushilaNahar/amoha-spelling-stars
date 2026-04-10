@@ -82,8 +82,16 @@
 
 <script>
 var W = [
-  { word: "back", rule: "Rule 25", ruleText: "CK only after a single short vowel" },
-  { word: "ball", rule: "Rule 21", ruleText: "ALL alone has two Ls" }
+  { word: "back",  rule: "Rule 25", ruleText: "CK only after a single short vowel" },
+  { word: "ball",  rule: "Rule 21", ruleText: "ALL alone has two Ls" },
+  { word: "call",  rule: "Rule 21", ruleText: "ALL alone has two Ls" },
+  { word: "fall",  rule: "Rule 21", ruleText: "ALL alone has two Ls" },
+  { word: "tall",  rule: "Rule 21", ruleText: "ALL alone has two Ls" },
+  { word: "wall",  rule: "Rule 21", ruleText: "ALL alone has two Ls" },
+  { word: "small", rule: "Rule 21", ruleText: "ALL alone has two Ls" },
+  { word: "came",  rule: "Rule 7",  ruleText: "Silent final E makes the vowel say its name" },
+  { word: "make",  rule: "Rule 7",  ruleText: "Silent final E makes the vowel say its name" },
+  { word: "made",  rule: "Rule 7",  ruleText: "Silent final E makes the vowel say its name" }
 ];
 
 var idx = 0;
@@ -131,7 +139,7 @@ function playWord() {
     curAudio = null;
   }
   var ts = new Date().getTime();
-  curAudio = new Audio(wordName + "2.m4a?" + ts);
+  curAudio = new Audio(wordName + ".m4a?" + ts);
   btn.style.background = "#6D28D9";
   curAudio.play();
   curAudio.onended = function() { btn.style.background = "#7C3AED"; };
