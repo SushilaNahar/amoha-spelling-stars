@@ -131,15 +131,16 @@ function load(n) {
 }
 
 function playWord() {
-  var w = W[idx];
+  var wordToPlay = W[idx].word;
   var btn = document.getElementById("listenBtn");
   if (audio) { audio.pause(); audio.src = ""; audio = null; }
-  audio = new Audio();
-  audio.src = w.word + ".m4a";
+  var a = new Audio();
+  a.src = wordToPlay + ".m4a";
+  audio = a;
   btn.style.background = "#6D28D9";
-  audio.play();
-  audio.onended = function() { btn.style.background = "#7C3AED"; };
-  audio.onerror = function() { btn.style.background = "#7C3AED"; };
+  a.play();
+  a.onended = function() { btn.style.background = "#7C3AED"; };
+  a.onerror = function() { btn.style.background = "#7C3AED"; };
 }
 
 function fb(bg, col, msg) {
