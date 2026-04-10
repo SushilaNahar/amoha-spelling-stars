@@ -130,7 +130,8 @@ function playWord() {
     curAudio.src = "";
     curAudio = null;
   }
-  curAudio = new Audio(wordName + ".m4a");
+  var ts = new Date().getTime();
+  curAudio = new Audio(wordName + "2.m4a?" + ts);
   btn.style.background = "#6D28D9";
   curAudio.play();
   curAudio.onended = function() { btn.style.background = "#7C3AED"; };
