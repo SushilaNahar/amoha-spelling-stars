@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Amoha Spelling Stars</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, serif;
+    background: #7C3AED;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .header {
+    width: 100%;
+    background: #7C3AED;
+    padding: 28px 20px 20px;
+    text-align: center;
+  }
+  .header-stars { font-size: 1.4rem; letter-spacing: 6px; margin-bottom: 8px; color: #F9D923; }
+  .header h1 { font-size: 1.9rem; font-weight: bold; color: white; line-height: 1.2; }
+  .header h1 span { color: #F9D923; }
+  .header p { color: #DDD6FE; font-size: 0.9rem; margin-top: 6px; font-style: italic; }
+
+  .score-bar {
+    width: 100%;
+    background: #6D28D9;
+    padding: 10px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .score-item { text-align: center; }
+  .score-item .label { font-size: 0.68rem; color: #DDD6FE; text-transform: uppercase; letter-spacing: 1px; }
+  .score-item .value { font-size: 1.3rem; font-weight: bold; color: #F9D923; }
+
+  .main {
+    width: 100%;
+    max-width: 480px;
+    padding: 20px 20px 40px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .progress-wrap { background: #6D28D9; border-radius: 999px; height: 8px; width: 100%; overflow: hidden; }
+  .progress-fill { height: 100%; background: #F9D923; border-radius: 999px; transition: width 0.5s ease; }
+  .progress-label { text-align: center; color: #DDD6FE; font-size: 0.78rem; margin-top: 4px; }
+
+  .card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  }
+  .card-title {
+    font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #7C3AED; font-weight: bold; margin-bottom: 12px; text-align: center;
+  }
+  .level-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .level-btn {
+    background: #EDE9FE; color: #7C3AED; border: 2px solid #DDD6FE;
+    border-radius: 12px; padding: 9px 20px; font-size: 0.95rem;
+    font-weight: bold; cursor: pointer; transition: all 0.2s;
+  }
+  .level-btn.active { background: #7C3AED; color: white; border-color: #7C3AED; }
+
+  .word-card {
+    background: white; border-radius: 20px; padding: 28px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18); text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .word-number { font-size: 0.72rem; color: #A78BFA; text-transform: uppercase; letter-spacing: 2px; }
+
+  .listen-btn {
+    background: #7C3AED; color: white; border: none; border-radius: 50%;
+    width: 80px; height: 80px; font-size: 2.2rem; cursor: pointer;
+    box-shadow: 0 4px 18px rgba(124,58,237,0.4);
+    transition: transform 0.15s; display: flex; align-items: center; justify-content: center;
+  }
+  .listen-btn:active { transform: scale(0.91); }
+  .listen-btn.playing { background: #6D28D9; }
+
+  .listen-label { font-size: 0.8rem; color: #A78BFA; font-style: italic; }
+
+  .rule-badge {
+    background: #EDE9FE; color: #6D28D9; border-radius: 10px;
+    padding: 10px 16px; font-size: 0.8rem; line-height: 1.5;
+    text-align: center; max-width: 290px;
+  }
+  .rule-badge strong {
+    display: block; font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 1px; color: #7C3AED; margin-bottom: 3px;
+  }
+
+  .type-card {
+    background: white; border-radius: 20px; padding: 22px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18); text-align: center;
+  }
+  .type-label {
+    font-size: 0.78rem; color: #7C3AED; text-transform: uppercase;
+    letter-spacing: 1.5px; margin-bottom: 12px; font-weight: bold;
+  }
+  .spell-input {
+    width: 100%; border: 3px solid #DDD6FE; border-radius: 14px;
+    padding: 14px 18px; font-size: 1.6rem; text-align: center;
+    color: #3B0764; font-weight: bold; outline: none;
+    transition: border-color 0.2s; font-family: Georgia, serif; letter-spacing: 4px;
+  }
+  .spell-input:focus { border-color: #7C3AED; }
+  .spell-input.correct { border-color: #16a34a; background: #f0fdf4; }
+  .spell-input.wrong { border-color: #dc2626; background: #fff0f0; }
+
+  .submit-btn {
+    margin-top: 12px; width: 100%; background: #7C3AED; color: white;
+    border: none; border-radius: 14px; padding: 15px; font-size: 1.05rem;
+    font-weight: bold; cursor: pointer; letter-spacing: 1px;
+    box-shadow: 0 4px 18px rgba(124,58,237,0.35); transition: transform 0.15s;
+  }
+  .submit-btn:active { transform: scale(0.97); }
+
+  .feedback {
+    border-radius: 14px; padding: 14px 18px; text-align: center;
+    font-size: 1rem; font-weight: bold; display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct-msg { background: #dcfce7; color: #15803d; border: 2px solid #86efac; }
+  .feedback.wrong-msg { background: #fee2e2; color: #b91c1c; border: 2px solid #fca5a5; }
+  .feedback.copy-msg { background: #EDE9FE; color: #6D28D9; border: 2px solid #c4b5fd; }
+
+  .correct-word {
+    font-size: 1.8rem; letter-spacing: 4px; color: #7C3AED;
+    font-weight: bold; display: block; margin-top: 6px;
+  }
+
+  .nav-row {
+    display: flex; justify-content: space-between;
+    align-items: center; gap: 12px;
+  }
+  .nav-btn {
+    flex: 1; padding: 14px; border-radius: 14px; border: none;
+    font-size: 1rem; font-weight: bold; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; transition: transform 0.15s;
+  }
+  .nav-btn:active { transform: scale(0.96); }
+  .btn-back { background: white; color: #7C3AED; border: 2.5px solid #DDD6FE; }
+  .btn-forward { background: #F9D923; color: #3B0764; box-shadow: 0 4px 14px rgba(249,217,35,0.4); }
+  .btn-forward.hidden { visibility: hidden; pointer-events: none; }
+
+  .stars-earned { text-align: center; padding: 10px 0 4px; }
+  .stars-earned .star-row { font-size: 1.8rem; letter-spacing: 4px; }
+  .stars-earned p { color: #DDD6FE; font-size: 0.8rem; margin-top: 4px; font-style: italic; }
+
+  footer { width: 100%; text-align: center; padding: 14px; color: #C4B5FD; font-size: 0.75rem; font-style: italic; }
+
+  .celebrate {
+    position: fixed; inset: 0; background: rgba(124,58,237,0.92);
+    flex-direction: column; align-items: center;
+    justify-content: center; z-index: 100; display: none;
+  }
+  .celebrate.show { display: flex; }
+  .celebrate-text { font-size: 2.8rem; color: #F9D923; font-weight: bold; text-align: center; line-height: 1.2; }
+  .celebrate-sub { color: white; font-size: 1.1rem; margin-top: 12px; font-style: italic; }
+  .celebrate-stars { font-size: 2.5rem; letter-spacing: 8px; margin-top: 14px; }
+
+  .finished-card {
+    background: white; border-radius: 20px; padding: 32px 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18); text-align: center;
+    display: none;
+  }
+  .finished-card.show { display: block; }
+  .finished-card h2 { color: #7C3AED; font-size: 1.6rem; margin-bottom: 10px; }
+  .finished-card p { color: #6D28D9; font-size: 1rem; margin-bottom: 16px; }
+  .restart-btn {
+    background: #7C3AED; color: white; border: none; border-radius: 14px;
+    padding: 14px 28px; font-size: 1rem; font-weight: bold; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-stars">&#9733; &#9733; &#9733;</div>
+  <h1>Amoha&#39;s <span>Spelling Stars</span></h1>
+  <p>Listen carefully, then spell the word!</p>
+</div>
+
+<div class="score-bar">
+  <div class="score-item">
+    <div class="label">Stars Today</div>
+    <div class="value" id="starsDisplay">&#9733; 0</div>
+  </div>
+  <div class="score-item">
+    <div class="label">Words Done</div>
+    <div class="value" id="doneDisplay">0</div>
+  </div>
+  <div class="score-item">
+    <div class="label">Mastered</div>
+    <div class="value" id="masteredDisplay">&#10003; 0</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div>
+    <div class="progress-wrap">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="progress-label" id="progressLabel">0 of 2 words practised</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Choose Your Level</div>
+    <div class="level-buttons">
+      <button class="level-btn" id="lvl1" onclick="selectLevel(1)">Level 1</button>
+      <button class="level-btn active" id="lvl2" onclick="selectLevel(2)">Level 2</button>
+      <button class="level-btn" id="lvl3" onclick="selectLevel(3)">Level 3</button>
+    </div>
+  </div>
+
+  <div class="word-card" id="wordCard">
+    <div class="word-number" id="wordNumber">Word 1 of 2</div>
+    <button class="listen-btn" id="listenBtn" onclick="playWord()">&#9654;</button>
+    <div class="listen-label">Tap to hear the word</div>
+    <div class="rule-badge">
+      <strong id="ruleTitle">Spelling Rule</strong>
+      <span id="ruleText"></span>
+    </div>
+  </div>
+
+  <div id="feedbackBox" class="feedback"></div>
+
+  <div class="type-card" id="typeCard">
+    <div class="type-label" id="typeLabel">Now spell the word</div>
+    <input class="spell-input" type="text" id="spellInput"
+      placeholder="type here"
+      autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <button class="submit-btn" id="submitBtn" onclick="checkAnswer()">Check My Spelling &#10003;</button>
+  </div>
+
+  <div class="finished-card" id="finishedCard">
+    <h2>&#9733; Well done Amoha! &#9733;</h2>
+    <p id="finishedMsg">You have finished all the words!</p>
+    <button class="restart-btn" onclick="initLevel(currentLevel)">Play Again</button>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn btn-back" onclick="goBack()">&#8592; Back</button>
+    <button class="nav-btn btn-forward hidden" id="nextBtn" onclick="goNext()">Next &#8594;</button>
+  </div>
+
+  <div class="stars-earned">
+    <div class="star-row" id="starRow">&#9734; &#9734; &#9734; &#9734; &#9734;</div>
+    <p id="starMsg">Earn stars by spelling correctly!</p>
+  </div>
+
+</div>
+
+<footer>Made with love for Amoha &#127800;</footer>
+
+<div class="celebrate" id="celebrate">
+  <div class="celebrate-text">&#127775; Brilliant!<br>Amoha! &#127775;</div>
+  <div class="celebrate-sub">That is correct!</div>
+  <div class="celebrate-stars">&#9733; &#9733; &#9733;</div>
+</div>
+
+<script>
+var WORDS = {
+  2: [
+    { word: "back", rule: "Rule 25", ruleText: "CK only after a single short vowel" },
+    { word: "ball", rule: "Rule 21", ruleText: "ALL alone has two Ls" }
+  ]
+};
+
+var currentLevel = 2;
+var queue = [];
+var currentIndex = 0;
+var copyMode = false;
+var stars = 0;
+var correctStreak = {};
+var mastered = {};
+var history = [];
+var currentAudio = null;
+
+function initLevel(level) {
+  currentLevel = level;
+  queue = [];
+  var words = WORDS[level] || [];
+  for (var i = 0; i < words.length; i++) {
+    queue.push(i);
+  }
+  currentIndex = 0;
+  copyMode = false;
+  history = [];
+  stars = 0;
+  correctStreak = {};
+  mastered = {};
+  document.getElementById("finishedCard").className = "finished-card";
+  document.getElementById("wordCard").style.display = "";
+  document.getElementById("typeCard").style.display = "";
+  updateScore();
+  renderWord();
+}
+
+function renderWord() {
+  if (currentIndex >= queue.length) {
+    showFinished();
+    return;
+  }
+  var words = WORDS[currentLevel];
+  var idx = queue[currentIndex];
+  var w = words[idx];
+
+  document.getElementById("wordNumber").textContent =
+    "Word " + (currentIndex + 1) + " of " + queue.length;
+  document.getElementById("ruleTitle").textContent = w.rule;
+  document.getElementById("ruleText").textContent = w.ruleText;
+
+  var input = document.getElementById("spellInput");
+  input.value = "";
+  input.className = "spell-input";
+  input.disabled = false;
+
+  document.getElementById("feedbackBox").className = "feedback";
+  document.getElementById("feedbackBox").innerHTML = "";
+  document.getElementById("submitBtn").style.display = "block";
+  document.getElementById("nextBtn").className = "nav-btn btn-forward hidden";
+
+  if (copyMode) {
+    document.getElementById("typeLabel").textContent = "Type the correct spelling once";
+    document.getElementById("submitBtn").textContent = "Done ✓";
+  } else {
+    document.getElementById("typeLabel").textContent = "Now spell the word";
+    document.getElementById("submitBtn").textContent = "Check My Spelling ✓";
+  }
+
+  updateProgress();
+}
+
+function playWord() {
+  var words = WORDS[currentLevel];
+  var idx = queue[currentIndex];
+  var w = words[idx];
+  var btn = document.getElementById("listenBtn");
+
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+  }
+
+  currentAudio = new Audio(w.word + ".m4a");
+  btn.className = "listen-btn playing";
+  currentAudio.play();
+  currentAudio.onended = function() {
+    btn.className = "listen-btn";
+  };
+}
+
+function checkAnswer() {
+  var words = WORDS[currentLevel];
+  var idx = queue[currentIndex];
+  var w = words[idx];
+  var input = document.getElementById("spellInput");
+  var typed = input.value.trim().toLowerCase();
+
+  if (typed === "") return;
+
+  if (copyMode) {
+    if (typed === w.word) {
+      input.className = "spell-input correct";
+      showFeedback("copy-msg", "Good work! Now tap Next to continue.");
+      copyMode = false;
+      document.getElementById("submitBtn").style.display = "none";
+      document.getElementById("nextBtn").className = "nav-btn btn-forward";
+    } else {
+      input.value = "";
+      showFeedback("wrong-msg", "Try again -- type: " + w.word);
+    }
+    return;
+  }
+
+  if (typed === w.word) {
+    input.className = "spell-input correct";
+    stars++;
+    if (!correctStreak[w.word]) correctStreak[w.word] = 0;
+    correctStreak[w.word]++;
+    if (correctStreak[w.word] >= 2) mastered[w.word] = true;
+    showFeedback("correct-msg", "Brilliant! That is correct!");
+    document.getElementById("submitBtn").style.display = "none";
+    document.getElementById("nextBtn").className = "nav-btn btn-forward";
+    updateScore();
+    showCelebrate();
+  } else {
+    input.className = "spell-input wrong";
+    if (!correctStreak[w.word]) correctStreak[w.word] = 0;
+    correctStreak[w.word] = 0;
+    var fb = document.getElementById("feedbackBox");
+    fb.className = "feedback show wrong-msg";
+    fb.innerHTML = "Not quite! The correct spelling is:<br><span class='correct-word'>" + w.word + "</span><br>Now type it correctly once below.";
+    copyMode = true;
+    input.value = "";
+    input.className = "spell-input";
+    document.getElementById("typeLabel").textContent = "Type the correct spelling once";
+    document.getElementById("submitBtn").textContent = "Done ✓";
+    scheduleRetry(idx);
+  }
+}
+
+function scheduleRetry(idx) {
+  var insertAt = currentIndex + 4;
+  if (insertAt >= queue.length) {
+    queue.push(idx);
+  } else {
+    queue.splice(insertAt, 0, idx);
+  }
+}
+
+function showFeedback(cls, msg) {
+  var fb = document.getElementById("feedbackBox");
+  fb.className = "feedback show " + cls;
+  fb.innerHTML = msg;
+}
+
+function showCelebrate() {
+  var cel = document.getElementById("celebrate");
+  cel.className = "celebrate show";
+  setTimeout(function() { cel.className = "celebrate"; }, 1800);
+}
+
+function goNext() {
+  history.push(currentIndex);
+  currentIndex++;
+  copyMode = false;
+  document.getElementById("doneDisplay").textContent = currentIndex;
+  renderWord();
+}
+
+function goBack() {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+  }
+  if (history.length > 0) {
+    currentIndex = history.pop();
+  } else if (currentIndex > 0) {
+    currentIndex--;
+  }
+  copyMode = false;
+  renderWord();
+}
+
+function showFinished() {
+  document.getElementById("wordCard").style.display = "none";
+  document.getElementById("typeCard").style.display = "none";
+  document.getElementById("feedbackBox").className = "feedback";
+  document.getElementById("nextBtn").className = "nav-btn btn-forward hidden";
+  var fc = document.getElementById("finishedCard");
+  fc.className = "finished-card show";
+  var m = Object.keys(mastered).length;
+  document.getElementById("finishedMsg").textContent =
+    "You got " + stars + " star" + (stars === 1 ? "" : "s") +
+    " and mastered " + m + " word" + (m === 1 ? "" : "s") + ". Amazing!";
+}
+
+function updateScore() {
+  document.getElementById("starsDisplay").innerHTML = "&#9733; " + stars;
+  var m = Object.keys(mastered).length;
+  document.getElementById("masteredDisplay").innerHTML = "&#10003; " + m;
+  var filled = Math.min(stars, 5);
+  var row = "";
+  for (var i = 0; i < 5; i++) {
+    row += i < filled ? "&#9733; " : "&#9734; ";
+  }
+  document.getElementById("starRow").innerHTML = row;
+  document.getElementById("starMsg").textContent = stars === 0
+    ? "Earn stars by spelling correctly!"
+    : stars + " star" + (stars === 1 ? "" : "s") + " earned -- keep going!";
+}
+
+function updateProgress() {
+  var total = WORDS[currentLevel].length;
+  var pct = total === 0 ? 0 : Math.round((currentIndex / total) * 100);
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("progressLabel").textContent =
+    currentIndex + " of " + total + " words practised";
+}
+
+function selectLevel(n) {
+  for (var i = 1; i <= 3; i++) {
+    document.getElementById("lvl" + i).className = "level-btn";
+  }
+  document.getElementById("lvl" + n).className = "level-btn active";
+  initLevel(n);
+}
+
+initLevel(2);
+</script>
+</body>
+</html>
